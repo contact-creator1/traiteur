@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Démo page traiteur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Direction : carte de restaurant. Cormorant élégant, ivoire, vert olive profond et terracotta. Le simulateur de réception du haut de page (convives et formule) est l'élément signature. */
+:root{
+  color-scheme: light; --scheme: light;
+  --paper:#F7F3EA; --card:#FFFDF8; --ink:#1F2A1E; --muted:#667062; --line:#E2DBCB; --line2:#CFC7B4;
+  --accent:#B5532F; --soft:#F3E2D6; --mark:#6E7B3C;
+  --btn-bg:#2F4030; --btn-fg:#fff; --btn-hover:#B5532F; --btn-hover-fg:#fff;
+  --bar-bg:#1F2A1E; --bar-fg:#E6E2D3; --top-bg:rgba(247,243,234,.9); --sticky-bg:rgba(255,253,248,.97);
+  --dark-bg:#2F4030; --dark-fg:#F4F0E3; --dark-accent:#E8B48F; --tile-fg:rgba(31,42,30,.75);
+  --display:"Cormorant Garamond","Garamond","Times New Roman",serif; --body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --hw:500; --ht:-.01em; --hcase:none; --em:italic;
+  --h1:clamp(3rem,11.5vw,5.8rem); --h2:clamp(2.2rem,7.8vw,3.6rem); --h3:1.6rem;
+  --r:14px; --rb:8px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;overflow-x:hidden;max-width:100%;padding-bottom:78px}
+a{color:inherit}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--display);font-weight:var(--hw);line-height:1.05;letter-spacing:var(--ht);text-wrap:balance;text-transform:var(--hcase)}
+h1{font-size:var(--h1)}
+h2{font-size:var(--h2);margin-bottom:30px}
+h1 em,h2 em{font-style:var(--em);color:var(--accent)}
+h3{font-size:var(--h3);margin-bottom:10px}
+section{padding:76px 0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mark);font-weight:600;margin-bottom:16px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--mark)}
+.rule{height:1px;background:var(--line)}
+
+.demo-bar{background:var(--bar-bg);color:var(--bar-fg);font-size:.8rem;text-align:center;padding:8px 16px}
+.top{position:sticky;top:0;z-index:20;background:var(--top-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
+.brand{font-family:var(--display);font-size:1.3rem;font-weight:var(--hw);letter-spacing:.02em;text-transform:var(--hcase)}
+.brand i{color:var(--accent);font-style:var(--em)}
+.links{display:flex;gap:28px;font-size:.84rem;letter-spacing:.08em;text-transform:uppercase}
+.links a{text-decoration:none;color:var(--muted)}
+.links a:hover{color:var(--ink)}
+
+.btn{display:inline-block;background:var(--btn-bg);color:var(--btn-fg);font-weight:600;text-decoration:none;border:1px solid var(--btn-bg);border-radius:var(--rb);padding:15px 30px;cursor:pointer;font-family:var(--body);font-size:.88rem;letter-spacing:.09em;text-transform:uppercase;transition:background .2s,border-color .2s,transform .2s,color .2s}
+.btn:hover{background:var(--btn-hover);border-color:var(--btn-hover);color:var(--btn-hover-fg);transform:translateY(-1px)}
+.btn.small{padding:10px 20px;font-size:.78rem}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+.hero{padding:50px 0 64px}
+.hero-grid{display:grid;gap:48px;grid-template-columns:1.05fr .95fr;align-items:center}
+.status{display:inline-flex;align-items:center;gap:10px;font-size:.84rem;color:var(--muted);margin-bottom:24px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 16px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:#4E9B73;box-shadow:0 0 0 4px rgba(78,155,115,.2)}
+.lead{font-size:1.1rem;color:var(--muted);max-width:30em;margin:26px 0 32px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.proof{display:flex;flex-wrap:wrap;gap:16px 40px;margin-top:44px;padding-top:26px;border-top:1px solid var(--line)}
+.proof div{font-size:.76rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.proof b{display:block;font-family:var(--display);font-weight:var(--hw);font-size:2rem;line-height:1.2;color:var(--ink);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+
+.stage{position:relative}
+.picker{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:12px}
+.picker-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.picker-head b{font-family:var(--display);font-style:var(--em);font-weight:var(--hw);font-size:1.05rem;letter-spacing:0;text-transform:none;color:var(--ink)}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:36px;height:36px;border-radius:50%;border:2px solid var(--card);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.finish{display:flex;gap:8px;flex-wrap:wrap}
+.finish button{font:inherit;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 15px;cursor:pointer;color:var(--ink)}
+.finish button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card);overflow:hidden;padding:16px 0}
+.track{display:flex;gap:44px;width:max-content;animation:slide 32s linear infinite;font-family:var(--display);font-style:var(--em);font-weight:var(--hw);font-size:1.25rem;color:var(--muted);white-space:nowrap;text-transform:var(--hcase)}
+.track i{color:var(--mark);font-style:normal;font-size:.9rem;align-self:center}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+.sig{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
+.sig article{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;display:flex;flex-direction:column;gap:10px;transition:transform .25s,box-shadow .25s}
+.sig article:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.1)}
+.num{font-family:var(--display);font-style:var(--em);font-weight:var(--hw);font-size:2.3rem;line-height:1;color:var(--accent)}
+.sig p{color:var(--muted);flex:1}
+.sig .from{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:14px;border-top:1px solid var(--line)}
+.sig .from b{font-family:var(--display);font-weight:var(--hw);font-size:1.4rem;letter-spacing:0;color:var(--ink);margin-left:6px}
+
+.carte{background:var(--dark-bg);color:var(--dark-fg);border-radius:calc(var(--r) + 10px);padding:56px 44px}
+.carte h2{color:var(--dark-fg)}.carte h2 em{color:var(--dark-accent)}
+.carte .eyebrow{color:var(--dark-accent)}.carte .eyebrow::before{background:var(--dark-accent)}
+.menu{display:grid;gap:10px 60px;grid-template-columns:1fr 1fr}
+.menu h3{font-style:var(--em);color:var(--dark-accent);margin:10px 0 6px}
+.row{display:flex;align-items:baseline;gap:8px;padding:11px 0}
+.row .du{font-size:.78rem;opacity:.65;white-space:nowrap}
+.row .sp{flex:1;border-bottom:1px dotted currentColor;opacity:.35;transform:translateY(-4px);min-width:10px}
+.row .pr{font-family:var(--display);font-weight:var(--hw);font-size:1.2rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.carte .fine{margin-top:22px;font-size:.84rem;opacity:.7}
+
+.gal{display:grid;gap:14px;grid-template-columns:repeat(4,1fr);align-items:start}
+.tile{aspect-ratio:3/4;border-radius:var(--r);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 0 18px;gap:14px}
+.tile:nth-child(even){margin-top:34px}
+.tile::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 26% 14%,rgba(255,255,255,.45),transparent 50%)}
+.tile span{position:relative;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tile-fg)}
+.tile .mini{position:relative}
+
+.steps{display:grid;gap:26px;grid-template-columns:repeat(3,1fr);counter-reset:s}
+.steps div{border-top:2px solid var(--ink);padding-top:20px}
+.steps div::before{counter-increment:s;content:"0" counter(s);font-family:var(--display);font-style:var(--em);font-weight:var(--hw);font-size:1.2rem;color:var(--accent);display:block;margin-bottom:10px}
+.steps p{color:var(--muted)}
+
+.note{font-size:.86rem;color:var(--muted);margin:-14px 0 26px}
+.reviews{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+.review{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;display:flex;flex-direction:column;gap:14px}
+.review p{flex:1;font-size:1.08rem;line-height:1.5}
+.stars{color:var(--mark);letter-spacing:.2em;font-size:.85rem}
+.review cite{font-style:normal;font-size:.76rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+
+.two{display:grid;gap:48px;grid-template-columns:1.15fr .85fr;align-items:start}
+details{border-bottom:1px solid var(--line)}
+details:first-child{border-top:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;padding:20px 0;font-size:1.05rem;display:flex;justify-content:space-between;gap:14px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.6rem;line-height:1;color:var(--accent);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 30px 22px 0;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px}
+.hours{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;margin-bottom:18px}
+.hours td{padding:10px 0;border-bottom:1px solid var(--line)}
+.hours td:last-child{text-align:right;color:var(--muted)}
+.panel p{color:var(--muted);margin-top:8px}
+
+.book{background:var(--card);border:1px solid var(--line);border-radius:calc(var(--r) + 10px);padding:52px 44px;margin-bottom:16px}
+.book-grid{display:grid;gap:40px;grid-template-columns:1.15fr .85fr;align-items:start}
+.book p.sub{color:var(--muted);margin:-14px 0 30px;max-width:36em}
+fieldset{border:0;margin-bottom:24px;min-width:0}
+legend,.field label{font-weight:600;font-size:.72rem;margin-bottom:12px;text-transform:uppercase;letter-spacing:.2em;color:var(--mark)}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{border:1px solid var(--line2);background:var(--paper);border-radius:999px;padding:10px 19px;cursor:pointer;font-size:.95rem;font-variant-numeric:tabular-nums;transition:border-color .15s}
+.chips label:hover{border-color:var(--ink)}
+.chips input:checked+label{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chips input:focus-visible+label{outline:3px solid var(--accent);outline-offset:2px}
+.rangebox{display:flex;align-items:center;gap:16px}
+.rangebox output{font-family:var(--display);font-weight:var(--hw);font-size:1.6rem;min-width:2.6em;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;accent-color:var(--accent);height:28px;min-width:0}
+.fields{display:grid;gap:18px;grid-template-columns:1fr 1fr}
+.field{display:grid;gap:8px}
+.field input{font:inherit;padding:14px 18px;border-radius:14px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);width:100%;min-width:0;color-scheme:var(--scheme)}
+.recap{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:28px;position:sticky;top:90px}
+.recap h3{font-style:var(--em)}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:14px;margin:8px 0 18px;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase}
+.total b{font-family:var(--display);font-weight:var(--hw);font-size:2.1rem;letter-spacing:0;font-variant-numeric:tabular-nums}
+.bub-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.bubble{background:#DCF8C6;color:#10291A;border-radius:16px 16px 4px 16px;padding:14px 16px;font-size:.92rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:18px}
+.wa{width:100%;text-align:center;background:#1FA855;border-color:#1FA855;color:#fff}
+.wa:hover{background:#178A45;border-color:#178A45;color:#fff}
+#confirm{margin-top:16px;background:var(--soft);border-radius:14px;padding:14px 16px;font-size:.92rem}
+#confirm[hidden]{display:none}
+
+footer{padding:36px 0 26px;color:var(--muted);font-size:.84rem;text-align:center}
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--sticky-bg);border-top:1px solid var(--line);padding:11px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sticky span{font-size:.82rem;color:var(--muted)}
+.sticky span b{color:var(--ink);display:block;font-size:.95rem;font-weight:600}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:860px){
+  .hero-grid,.sig,.menu,.reviews,.two,.book-grid,.steps{grid-template-columns:1fr}
+  .gal{grid-template-columns:1fr 1fr}
+  .links{display:none}
+  .hero{padding:34px 0 48px}
+  section{padding:56px 0}
+  .stage{max-width:400px;margin:0 auto;width:100%}
+  .carte{padding:40px 24px}
+  .book{padding:36px 22px}
+  .recap{position:static}
+  .two{gap:36px}
+  .fields{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .track{animation:none}
+  .rv{opacity:1;transform:none;transition:none}
+  .btn,.sig article{transition:none}
+  .vinyl,.eq i,.flash{animation:none!important}
+}
+
+.prog{position:fixed;left:0;top:0;height:3px;width:0;background:var(--accent);z-index:40}
+.navr{display:flex;gap:10px;align-items:center}
+.burger{display:none;width:42px;height:42px;border:1px solid var(--line2);border-radius:12px;background:var(--card);cursor:pointer;position:relative}
+.burger::before,.burger::after{content:"";position:absolute;left:11px;right:11px;height:2px;background:var(--ink);transition:transform .2s,top .2s}
+.burger::before{top:15px}.burger::after{top:24px}
+.burger[aria-expanded=true]::before{top:20px;transform:rotate(45deg)}
+.burger[aria-expanded=true]::after{top:20px;transform:rotate(-45deg)}
+.mmenu{display:none;padding:4px 0 18px}
+.mmenu a{display:block;padding:14px 0;text-decoration:none;font-family:var(--display);font-weight:var(--hw);font-size:1.3rem;border-bottom:1px solid var(--line);text-transform:var(--hcase)}
+
+.hero h1,.hero .lead,.hero .cta-row,.hero .proof,.hero .stage{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.hero .lead{animation-delay:.1s}.hero .cta-row{animation-delay:.2s}.hero .proof{animation-delay:.3s}.hero .stage{animation-delay:.15s}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* module métier : onglets */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tabs button,.gfilter button{font:inherit;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line2);background:transparent;color:var(--ink);border-radius:999px;padding:10px 18px;cursor:pointer;transition:background .2s,color .2s}
+.tabs button[aria-selected=true],.gfilter button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tp{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;border-top:1px solid var(--line)}
+.tp[hidden]{display:none}
+.tp div{padding:18px 0;border-bottom:1px solid var(--line);display:grid;gap:2px}
+.tp b{font-family:var(--display);font-weight:var(--hw);font-size:1.25rem;line-height:1.25;text-transform:var(--hcase)}
+.tp span{color:var(--muted)}
+.modnote{margin-top:18px;font-size:.86rem;color:var(--muted)}
+
+/* module métier : déroulé */
+.tl-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px}
+.tl-bar button{border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:var(--rb);padding:14px 4px;cursor:pointer;font-family:var(--display);font-weight:var(--hw);font-size:.9rem}
+.tl-bar button[aria-pressed=true]{background:var(--accent);color:var(--btn-fg);border-color:var(--accent)}
+.tl-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px;display:grid;gap:14px}
+.tl-panel p{color:var(--muted);max-width:40em}
+.meter{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.meter div{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;width:25%;border-radius:999px;background:linear-gradient(90deg,var(--vibe,var(--accent)),var(--accent));transition:width .6s cubic-bezier(.2,.7,.2,1)}
+
+/* module métier : avant / après */
+.cmp-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.cmp{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;--p:50%;box-shadow:0 20px 44px rgba(0,0,0,.16)}
+.cmp .scene{position:absolute;inset:0}
+.cmp .raw{filter:saturate(.2) contrast(.78) brightness(.9);clip-path:inset(0 calc(100% - var(--p)) 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--p);width:2px;background:#fff;transform:translateX(-1px);pointer-events:none}
+.cmp .bar::after{content:"\2194";position:absolute;top:50%;left:50%;width:42px;height:42px;border-radius:50%;background:#fff;color:#191817;display:grid;place-items:center;transform:translate(-50%,-50%);box-shadow:0 4px 14px rgba(0,0,0,.3);font-size:1.1rem}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.cmp .lab{position:absolute;top:14px;color:#fff;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.6);pointer-events:none}
+.cmp .lab.l{left:16px}.cmp .lab.r{right:16px}
+
+.ticks{list-style:none;display:grid;gap:12px;margin:22px 0}
+.ticks li{position:relative;padding-left:32px}
+.ticks li::before{content:"";position:absolute;left:0;top:.28em;width:20px;height:20px;border-radius:50%;background:var(--accent)}
+.ticks li::after{content:"";position:absolute;left:6px;top:.58em;width:8px;height:4px;border-left:2px solid var(--btn-fg);border-bottom:2px solid var(--btn-fg);transform:rotate(-45deg)}
+
+/* galerie */
+.gfilter{display:flex;gap:8px;flex-wrap:wrap;margin:-8px 0 24px}
+.gal2{columns:4 200px;column-gap:14px}
+.gal2 .tile{width:100%;margin:0 0 14px;break-inside:avoid;border:0;cursor:pointer;font:inherit;display:flex;transition:transform .25s}
+.gal2 .tile:hover{transform:scale(1.02)}
+.gal2 .tile:nth-child(3n+1){aspect-ratio:3/4}.gal2 .tile:nth-child(3n+2){aspect-ratio:1}.gal2 .tile:nth-child(3n){aspect-ratio:4/5}
+.gal2 .tile[hidden]{display:none}
+.gal2 .tile span{padding:0 10px;text-align:center}
+.lb{position:fixed;inset:0;z-index:60;background:rgba(10,8,8,.86);display:grid;place-items:center;padding:20px}
+.lb[hidden]{display:none}
+.lb-card{width:min(100%,430px);display:grid;gap:14px;color:#fff}
+.lb .tile{aspect-ratio:4/5;width:100%;margin:0}
+.lb-cap{font-family:var(--display);font-style:var(--em);font-size:1.3rem;text-transform:var(--hcase)}
+.lb-note{font-size:.86rem;opacity:.75;margin-top:-8px}
+.lb-nav{display:flex;gap:10px;justify-content:space-between}
+.lb-nav button{font:inherit;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:10px 18px;cursor:pointer;min-width:52px}
+.lb-nav button:hover{background:#fff;color:#111}
+
+/* à propos */
+.about{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center}
+.portrait{position:relative;aspect-ratio:4/5;border-radius:var(--r);background:linear-gradient(165deg,var(--soft),var(--line2));overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px}
+.portrait::before{content:"";position:absolute;left:50%;top:24%;width:30%;aspect-ratio:1;border-radius:50%;background:var(--ink);opacity:.2;transform:translateX(-50%)}
+.portrait::after{content:"";position:absolute;left:50%;bottom:-6%;width:66%;height:46%;border-radius:999px 999px 0 0;background:var(--ink);opacity:.2;transform:translateX(-50%)}
+.portrait span{position:relative;z-index:1;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);opacity:.75}
+.ab-p{color:var(--muted);max-width:36em}
+.sign{font-family:var(--display);font-style:var(--em);font-weight:var(--hw);font-size:1.6rem;color:var(--accent);text-transform:var(--hcase)}
+
+/* avis */
+.rsum{display:flex;align-items:center;gap:18px;margin:-10px 0 26px}
+.rsum b{font-family:var(--display);font-weight:var(--hw);font-size:3.4rem;line-height:1}
+.rsum small{display:block;color:var(--muted);font-size:.86rem}
+
+/* instagram */
+.ig-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.ig-head h2{margin:0}
+.ig-head .handle{border:1px solid var(--ink);border-radius:var(--rb);padding:10px 18px;font-size:.84rem;letter-spacing:.06em}
+.ig{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.ig div{aspect-ratio:1;border-radius:calc(var(--r) / 2);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tile-fg)}
+
+/* calendrier */
+.lbl{display:block;font-weight:600;font-size:.72rem;margin-bottom:12px;text-transform:uppercase;letter-spacing:.2em;color:var(--mark)}
+.cal{border:1px solid var(--line2);border-radius:var(--r);padding:16px;background:var(--paper);max-width:380px;margin-bottom:24px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-head b{font-family:var(--display);font-weight:var(--hw);font-size:1.15rem;text-transform:capitalize}
+.cal-head button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--ink);cursor:pointer;font-size:1.2rem;line-height:1}
+.cal-head button:disabled{opacity:.3;cursor:default}
+.cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-dow{font-size:.7rem;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+.cal-grid button{aspect-ratio:1;border:0;border-radius:50%;background:transparent;color:var(--ink);font:inherit;font-size:.9rem;cursor:pointer;font-variant-numeric:tabular-nums}
+.cal-grid button:hover:not(:disabled){background:var(--soft)}
+.cal-grid button.past{opacity:.28;cursor:default}
+.cal-grid button.full{color:var(--muted);text-decoration:line-through;cursor:default;background:repeating-linear-gradient(135deg,transparent 0 4px,var(--line) 4px 5px)}
+.cal-grid button[aria-pressed=true]{background:var(--accent);color:var(--btn-fg);font-weight:600}
+.cal-leg{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin-top:12px}
+.cal-leg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid var(--line2)}
+.cal-leg i.full{background:repeating-linear-gradient(135deg,transparent 0 3px,var(--line2) 3px 4px)}
+.cal-leg i.sel{background:var(--accent);border-color:var(--accent)}
+.fields{grid-template-columns:1fr;max-width:380px}
+
+/* pied de page */
+footer{text-align:left;padding:56px 0 30px;border-top:1px solid var(--line);margin-top:40px}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:36px;margin-bottom:34px}
+.foot h4{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mark);margin-bottom:12px;font-family:var(--body)}
+.foot p,.foot a{display:block;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.foot a:hover{color:var(--ink)}
+.foot .brand{color:var(--ink);margin-bottom:10px}
+.legal{border-top:1px solid var(--line);padding-top:18px;font-size:.8rem}
+
+@media (max-width:860px){
+  .burger{display:block}
+  .mmenu.open{display:block}
+  .tp,.cmp-grid,.about,.foot{grid-template-columns:1fr}
+  .about{gap:30px}
+  .portrait{max-width:300px}
+  .gal2{columns:2;column-gap:10px}
+  .gal2 .tile{margin-bottom:10px}
+  .ig{grid-template-columns:repeat(3,1fr)}
+  .tl-bar button{font-size:.72rem;padding:12px 2px}
+  .reviews{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:86%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+  .review{scroll-snap-align:start}
+  .cal,.fields{max-width:none}
+  .row{flex-wrap:wrap;gap:2px 10px}
+  .row .nm{flex:1 1 55%;min-width:0}
+  .row .sp{display:none}
+  .row .pr{margin-left:auto}
+  .row .du{order:3;flex-basis:100%;white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero h1,.hero .lead,.hero .cta-row,.hero .proof,.hero .stage{animation:none}
+  .gal2 .tile,.meter i{transition:none}
+}
+
+
+.ticket{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px 30px;box-shadow:0 24px 50px rgba(31,42,30,.1);display:grid;gap:18px;overflow:hidden}
+.ticket::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(90deg,var(--accent) 0 14px,var(--mark) 14px 28px)}
+.plate{position:absolute;right:-34px;top:-38px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#fff 0 46%,#EFE8D8 47% 49%,#fff 50% 64%,#E7DFCB 65% 66%,#FBF8F0 67%);box-shadow:0 14px 30px rgba(31,42,30,.14)}
+.plate i{position:absolute;border-radius:50%}
+.plate i:nth-child(1){width:34px;height:34px;left:48px;top:62px;background:var(--accent)}
+.plate i:nth-child(2){width:24px;height:24px;left:78px;top:54px;background:var(--mark)}
+.plate i:nth-child(3){width:16px;height:16px;left:74px;top:82px;background:#E3B23C}
+.tk-head{position:relative;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mark);font-weight:600;max-width:60%}
+.tk-head b{display:block;font-family:var(--display);font-style:italic;font-weight:500;font-size:2rem;line-height:1.1;letter-spacing:0;text-transform:none;color:var(--ink);margin-top:6px}
+.tk-line{display:flex;justify-content:space-between;align-items:baseline;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:34px}
+.tk-line b{font-family:var(--display);font-weight:500;font-size:2.6rem;line-height:1;letter-spacing:0;color:var(--ink);font-variant-numeric:tabular-nums}
+.ticket input[type=range]{width:100%}
+.tk-total{border-top:1px dashed var(--line2);padding-top:18px;display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:2px 12px}
+.tk-total span{font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.tk-total b{font-family:var(--display);font-weight:600;font-size:2.8rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.tk-total small{grid-column:1/-1;text-align:right;color:var(--muted);font-size:.9rem}
+.tile .mini{width:56%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,var(--dot) 0 22%,#fff 23% 58%,rgba(0,0,0,.08) 59% 61%,#fff 62%);box-shadow:0 10px 20px rgba(31,42,30,.16)}
+.t1{background:linear-gradient(165deg,#EEE7D3,#D3C9A6);--dot:#B5532F}
+.t2{background:linear-gradient(165deg,#E4EAD6,#B9C59A);--dot:#6E7B3C}
+.t3{background:linear-gradient(165deg,#F4E3D4,#E1B595);--dot:#E3B23C}
+.t4{background:linear-gradient(165deg,#E9E4DA,#C2B8A4);--dot:#2F4030}
+
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+<div class="demo-bar">Page de démonstration. Nom, chiffres, tarifs et avis sont des exemples, remplacés par les vôtres.</div>
+
+<div class="top">
+  <div class="wrap">
+    <nav>
+      <div class="brand">Maison <i>Garrigue</i></div>
+      <div class="links"><a href="#offres">Formules</a><a href="#tarifs">Tarifs</a><a href="#galerie">Réalisations</a><a href="#apropos">À propos</a><a href="#infos">Infos</a></div>
+      <div class="navr"><a class="btn small" href="#devis">Devis</a><button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"></button></div>
+    </nav>
+    <div class="mmenu" id="mmenu"><a href="#offres">Formules</a><a href="#tarifs">Tarifs</a><a href="#galerie">Réalisations</a><a href="#apropos">À propos</a><a href="#infos">Infos</a><a href="#devis">Demander un devis</a></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="status">Devis gratuit sous 24 h</div>
+        <h1>Votre réception, <em>cuisinée maison.</em></h1>
+        <p class="lead">Traiteur pour mariages, anniversaires et repas d'entreprise. Produits frais et de saison, de 10 à 200 convives. Indiquez le nombre d'invités, vous avez le prix tout de suite.</p>
+        <div class="cta-row">
+          <a class="btn" href="#devis">Demander un devis</a>
+          <a class="btn ghost" href="#tarifs">Voir les tarifs</a>
+        </div>
+        <div class="proof"><div><b data-to="12" data-dec="0" data-suf=" ans">12 ans</b>de métier</div><div><b data-to="350" data-dec="0" data-suf="">350</b>réceptions</div><div><b data-to="4.8" data-dec="1" data-suf="/5">4,8/5</b>210 avis</div></div>
+      </div>
+      <div class="stage">
+        <div class="ticket">
+          <div class="plate" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="tk-head">Simulateur<b>Votre réception</b></div>
+          <div class="tk-line"><span>Convives</span><b id="hgOut">60</b></div>
+          <input type="range" id="hg" aria-label="Nombre de convives" min="10" max="200" step="5" value="60">
+          <div class="finish" id="hf">
+            <button type="button" data-i="0" aria-pressed="false">Cocktail</button>
+            <button type="button" data-i="1" aria-pressed="true">Buffet</button>
+            <button type="button" data-i="2" aria-pressed="false">Repas servi</button>
+          </div>
+          <div class="tk-total"><span>Estimation</span><b id="hTotal">1 560 €</b><small id="hPer">soit 26 € par personne</small></div>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<div class="strip" aria-hidden="true">
+  <div class="track"><span>Cocktails dînatoires</span><i>✦</i><span>Buffets</span><i>✦</i><span>Repas servis</span><i>✦</i><span>Mariages</span><i>✦</i><span>Séminaires</span><i>✦</i><span>Plateaux repas</span><i>✦</i><span>Brunchs</span><i>✦</i><span>Produits de saison</span><i>✦</i><span>Cocktails dînatoires</span><i>✦</i><span>Buffets</span><i>✦</i><span>Repas servis</span><i>✦</i><span>Mariages</span><i>✦</i><span>Séminaires</span><i>✦</i><span>Plateaux repas</span><i>✦</i><span>Brunchs</span><i>✦</i><span>Produits de saison</span><i>✦</i></div>
+</div>
+
+<div class="wrap">
+  <section id="offres">
+    <p class="eyebrow rv">Les formules</p>
+    <h2 class="rv">Trois façons de <em>recevoir</em></h2>
+    <div class="sig"><article class="rv"><span class="num">01</span><h3>Le cocktail dînatoire</h3><p>Douze pièces salées et sucrées par personne, froides et chaudes, servies au buffet ou au plateau.</p><div class="from">Par personne<b>18 €</b></div></article><article class="rv"><span class="num">02</span><h3>Le buffet</h3><p>Entrées, deux plats au choix, fromages et desserts. Dressage et vaisselle compris.</p><div class="from">Par personne<b>26 €</b></div></article><article class="rv"><span class="num">03</span><h3>Le repas servi</h3><p>Entrée, plat, dessert servis à table par notre équipe, menu établi avec vous.</p><div class="from">Par personne<b>39 €</b></div></article></div>
+  </section>
+
+  <section id="carte" style="padding-top:0" data-tabs>
+    <p class="eyebrow rv">Les menus</p>
+    <h2 class="rv">Un aperçu de <em>la carte</em></h2>
+    <div class="tabs rv" role="tablist"><button type="button" role="tab" aria-selected="true">Cocktail dînatoire</button><button type="button" role="tab" aria-selected="false">Buffet</button><button type="button" role="tab" aria-selected="false">Repas servi</button></div>
+    <div class="rv"><div class="tp" role="tabpanel"><div><b>Pièces froides</b><span>Verrines de saison, tartelettes fines, blinis au saumon fumé.</span></div><div><b>Pièces chaudes</b><span>Mini-burgers, accras, feuilletés au fromage.</span></div><div><b>Atelier</b><span>Découpe de jambon ou plancha devant vos invités.</span></div><div><b>Douceurs</b><span>Macarons, choux garnis, brochettes de fruits.</span></div></div><div class="tp" role="tabpanel" hidden><div><b>Entrées</b><span>Salades composées, terrines maison, crudités et sauces.</span></div><div><b>Plats</b><span>Volaille rôtie aux herbes ou poisson en sauce, deux garnitures.</span></div><div><b>Fromages</b><span>Plateau de fromages affinés et pain de campagne.</span></div><div><b>Desserts</b><span>Tartes de saison, mousse au chocolat, salade de fruits.</span></div></div><div class="tp" role="tabpanel" hidden><div><b>Entrée</b><span>Foie gras maison ou tartare de légumes croquants.</span></div><div><b>Plat</b><span>Suprême de volaille, jus corsé, gratin et légumes glacés.</span></div><div><b>Fromage</b><span>Assiette de trois fromages, mesclun.</span></div><div><b>Dessert</b><span>Pièce montée ou assiette gourmande.</span></div></div></div>
+    <p class="modnote">Menus d'exemple. Vos plats et vos spécialités prennent leur place, avec vos photos.</p>
+  </section>
+
+  <section id="tarifs" style="padding-top:0">
+    <div class="carte rv">
+      <p class="eyebrow">Tarifs</p>
+      <h2>Formules et <em>prix</em></h2>
+      <div class="menu"><div><h3>Par personne</h3><div class="row"><span class="nm">Cocktail dînatoire</span><span class="du">12 pièces</span><span class="sp"></span><span class="pr">18 €</span></div><div class="row"><span class="nm">Buffet froid et chaud</span><span class="du">complet</span><span class="sp"></span><span class="pr">26 €</span></div><div class="row"><span class="nm">Repas servi à table</span><span class="du">3 plats</span><span class="sp"></span><span class="pr">39 €</span></div><div class="row"><span class="nm">Menu enfant</span><span class="du">jusqu'à 10 ans</span><span class="sp"></span><span class="pr">12 €</span></div></div><div><h3>En plus</h3><div class="row"><span class="nm">Forfait boissons</span><span class="du">par personne</span><span class="sp"></span><span class="pr">6 €</span></div><div class="row"><span class="nm">Service en salle</span><span class="du">par personne</span><span class="sp"></span><span class="pr">8 €</span></div><div class="row"><span class="nm">Pièce montée ou gâteau</span><span class="du">par personne</span><span class="sp"></span><span class="pr">5 €</span></div><div class="row"><span class="nm">Plateau repas</span><span class="du">livré au bureau</span><span class="sp"></span><span class="pr">16 €</span></div></div></div>
+      <p class="fine">Tarifs d'exemple. Vos formules, vos menus et vos zones de livraison prennent leur place.</p>
+    </div>
+  </section>
+
+  <section id="galerie" style="padding-top:0">
+    <p class="eyebrow rv">Réalisations</p>
+    <h2 class="rv">Nos dernières <em>tables</em></h2>
+    <div class="gfilter rv" id="gfilter" aria-label="Filtrer les réalisations"></div>
+    <div class="gal2" id="gal"></div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section id="apropos">
+    <div class="about">
+      <div class="portrait rv" role="img" aria-label="Emplacement de votre portrait"><span>Votre portrait</span></div>
+      <div>
+        <p class="eyebrow rv">À propos</p>
+        <h2 class="rv">Une cuisine <em>de produits</em></h2>
+        <p class="ab-p rv">Quelques lignes pour vous présenter : votre parcours en cuisine, votre équipe, vos producteurs et ce qui fait la différence dans l'assiette de vos clients.</p>
+        <ul class="ticks rv"><li>Tout est cuisiné dans notre laboratoire</li><li>Producteurs locaux et produits de saison</li><li>Un seul interlocuteur du devis au jour J</li></ul>
+        <p class="sign rv">Votre nom, chef</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <p class="eyebrow rv">Le déroulé</p>
+    <h2 class="rv">Comment ça <em>se passe</em></h2>
+    <div class="steps"><div class="rv"><h3>Vous indiquez vos besoins</h3><p>Date, nombre de convives, formule. L'estimation s'affiche tout de suite.</p></div><div class="rv"><h3>Nous composons le menu</h3><p>Devis détaillé sous 24 h, dégustation possible pour les mariages.</p></div><div class="rv"><h3>Nous livrons et installons</h3><p>Livraison, dressage et service le jour J. Vous profitez de vos invités.</p></div></div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section id="avis">
+    <p class="eyebrow rv">Avis</p>
+    <h2 class="rv">Ce qu'on dit de <em>la maison</em></h2>
+    <div class="rsum rv"><b>4,8</b><div><span class="stars" aria-hidden="true">★★★★★</span><small>Note moyenne sur 210 avis. Chiffres et avis d'exemple, remplacés par vos vrais avis Google.</small></div></div>
+    <div class="reviews"><blockquote class="review rv"><p>Exemple : ils racontent que les invités parlent encore du buffet et que tout était prêt à l'heure.</p><span class="stars" aria-label="5 sur 5">★★★★★</span><cite>Prénoms, mariage de 120 convives</cite></blockquote><blockquote class="review rv"><p>Exemple : elle souligne des quantités généreuses et un service discret pendant le séminaire.</p><span class="stars" aria-label="5 sur 5">★★★★★</span><cite>Prénom, repas d'entreprise</cite></blockquote><blockquote class="review rv"><p>Exemple : il a apprécié le devis clair, sans surprise sur la facture.</p><span class="stars" aria-label="5 sur 5">★★★★★</span><cite>Prénom, anniversaire de 40 ans</cite></blockquote></div>
+  </section>
+
+  <section id="insta" style="padding-top:0">
+    <div class="ig-head rv"><div><p class="eyebrow">Instagram</p><h2>Nos dernières <em>réceptions</em></h2></div><span class="handle">@votrecompte</span></div>
+    <div class="ig rv"><div class="t1">Votre post</div><div class="t2">Votre post</div><div class="t3">Votre post</div><div class="t4">Votre post</div><div class="t2">Votre post</div><div class="t1">Votre post</div></div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section id="infos">
+    <div class="two">
+      <div>
+        <p class="eyebrow rv">Avant de commander</p>
+        <h2 class="rv">Vos <em>questions</em></h2>
+        <div class="faq rv"><details><summary>Combien de temps à l'avance faut-il réserver ?</summary><p>Exemple de réponse : trois semaines pour un repas de famille, six mois pour un mariage en saison.</p></details><details><summary>Gérez-vous les régimes particuliers ?</summary><p>Exemple de réponse : oui, végétarien, sans gluten ou sans porc, à préciser dans la demande.</p></details><details><summary>La vaisselle et le service sont-ils compris ?</summary><p>Exemple de réponse : la vaisselle est comprise dans le buffet et le repas servi, le service est en option.</p></details><details><summary>Jusqu'où livrez-vous ?</summary><p>Exemple de réponse : dans un rayon de 50 km, livraison offerte à partir de 40 convives.</p></details></div>
+      </div>
+      <div class="panel rv">
+        <h3>Nous joindre</h3>
+        <table class="hours"><tr><td>Lundi au vendredi</td><td>9 h à 18 h</td></tr><tr><td>Samedi</td><td>9 h à 12 h</td></tr><tr><td>Dimanche</td><td>Sur réception</td></tr></table>
+        <h3>Le laboratoire</h3>
+        <p>Votre adresse et votre zone de livraison.</p><p>Votre téléphone, cliquable depuis un mobile.</p><p>Votre Instagram ou Facebook, pour voir vos réceptions.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="book rv" id="devis">
+    <p class="eyebrow">Devis</p>
+    <h2>Votre devis en <em>30 secondes</em></h2>
+    <p class="sub">Réglez le nombre de convives et la formule : l'estimation se calcule toute seule, et le message part sur WhatsApp.</p>
+    <form id="f" class="book-grid">
+      <div>
+        <fieldset>
+          <legend>Occasion</legend>
+          <div class="chips">
+            <input type="radio" name="occ" id="occ1" value="Mariage" checked><label for="occ1">Mariage</label>
+            <input type="radio" name="occ" id="occ2" value="Anniversaire"><label for="occ2">Anniversaire</label>
+            <input type="radio" name="occ" id="occ3" value="Entreprise"><label for="occ3">Entreprise</label>
+            <input type="radio" name="occ" id="occ4" value="Autre"><label for="occ4">Autre</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Convives</legend>
+          <div class="rangebox"><input type="range" id="rng" aria-label="Convives" data-range data-unit="convives" min="10" max="200" step="5" value="60"><output>60</output></div>
+        </fieldset>
+        <fieldset>
+          <legend>Formule</legend>
+          <div class="chips">
+            <input type="radio" name="formule" id="formule1" value="Cocktail dînatoire" data-u="18"><label for="formule1">Cocktail dînatoire</label>
+            <input type="radio" name="formule" id="formule2" value="Buffet" data-u="26" checked><label for="formule2">Buffet</label>
+            <input type="radio" name="formule" id="formule3" value="Repas servi" data-u="39"><label for="formule3">Repas servi</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Options</legend>
+          <div class="chips">
+            <input type="checkbox" name="opt" id="opt1" value="Boissons" data-u="6"><label for="opt1">Boissons</label>
+            <input type="checkbox" name="opt" id="opt2" value="Service en salle" data-u="8"><label for="opt2">Service en salle</label>
+            <input type="checkbox" name="opt" id="opt3" value="Dessert ou pièce montée" data-u="5"><label for="opt3">Dessert ou pièce montée</label>
+          </div>
+        </fieldset>
+        <span class="lbl">Date de la réception</span>
+        <div class="cal">
+          <div class="cal-head"><button type="button" id="calPrev" aria-label="Mois précédent">‹</button><b id="calTitle"></b><button type="button" id="calNext" aria-label="Mois suivant">›</button></div>
+          <div class="cal-dow" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <p class="cal-leg"><span><i></i>Libre</span><span><i class="full"></i>Complet</span><span><i class="sel"></i>Votre choix</span></p>
+        </div>
+        <input id="date" name="date" type="hidden">
+        <div class="fields">
+          <div class="field"><label for="prenom">Votre prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" placeholder="Prénom"></div>
+        </div>
+      </div>
+      <aside class="recap">
+        <h3>Votre demande</h3>
+        <div class="total"><span>Estimation</span><b id="rTotal"></b></div>
+        <p class="bub-label">Le message envoyé</p>
+        <div class="bubble" id="bubble"></div>
+        <button class="btn wa" type="button" id="send">Envoyer sur WhatsApp</button>
+        <div id="confirm" role="status" hidden>Ceci est une démo. Sur votre page, ce bouton ouvre WhatsApp avec ce message déjà écrit : il arrive directement sur votre téléphone, vous n'avez plus qu'à répondre.</div>
+      </aside>
+    </form>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div><div class="brand">Maison <i>Garrigue</i></div><p>Traiteur pour mariages, fêtes de famille et événements d'entreprise.</p></div>
+      <div><h4>Le site</h4><a href="#offres">Formules</a><a href="#tarifs">Tarifs</a><a href="#galerie">Réalisations</a><a href="#devis">Devis</a></div>
+      <div><h4>Contact</h4><p>Votre téléphone</p><p>Votre adresse</p><p>Votre Instagram</p></div>
+    </div>
+    <p class="legal">Page de démonstration. Sur votre version, chaque demande arrive directement sur votre WhatsApp, et les mentions légales sont à votre nom.</p>
+  </div>
+</footer>
+
+<div class="sticky">
+  <span><b id="stickyTxt"></b>Devis gratuit par WhatsApp</span>
+  <a class="btn small" href="#devis">Devis</a>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo agrandie" hidden>
+  <div class="lb-card">
+    <div class="tile" id="lbv"></div>
+    <div class="lb-cap" id="lbc"></div>
+    <p class="lb-note">Sur votre page, votre photo s'affiche ici en grand.</p>
+    <div class="lb-nav"><button type="button" id="lbp" aria-label="Précédente">‹</button><button type="button" id="lbx">Fermer</button><button type="button" id="lbn" aria-label="Suivante">›</button></div>
+  </div>
+</div>
+
+<script>
+
+(function () {
+  var form = document.getElementById('f');
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function update() {
+    var rng = form.querySelector('[data-range]'), nr = form.querySelector('input[data-n]:checked');
+    var n = rng ? +rng.value : (nr ? +nr.dataset.n : 1);
+    var fixed = 0, unit = 0, lines = [];
+    form.querySelectorAll('fieldset').forEach(function (fs) {
+      var lg = fs.querySelector('legend').textContent, vals = [];
+      fs.querySelectorAll('input:checked').forEach(function (i) {
+        vals.push(i.value); fixed += +(i.dataset.p || 0); unit += +(i.dataset.u || 0);
+      });
+      var r = fs.querySelector('[data-range]');
+      if (r) { vals.push(r.value + ' ' + r.dataset.unit); fs.querySelector('output').textContent = r.value; }
+      if (vals.length) lines.push(lg + ' : ' + vals.join(', '));
+    });
+    var total = fixed + unit * n;
+    var d = form.querySelector('#date').value, prenom = form.querySelector('#prenom').value.trim();
+    if (d) {
+      var dt = new Date(d + 'T12:00:00');
+      if (!isNaN(dt)) lines.push('Date : ' + dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }));
+    }
+    var msg = 'Bonjour ! Je souhaite un devis.\n' + lines.join('\n') + '\nEstimation vue sur le site : ' + fmt(total) + ' €' + (prenom ? '\n' + prenom : '');
+    document.getElementById('rTotal').textContent = fmt(total) + ' €';
+    document.getElementById('bubble').textContent = msg;
+    document.getElementById('stickyTxt').textContent = 'Estimation : ' + fmt(total) + ' €';
+    document.dispatchEvent(new CustomEvent('demo:update', { detail: { n: n, total: total, fmt: fmt } }));
+  }
+  form.addEventListener('change', update);
+  form.addEventListener('input', update);
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  document.getElementById('send').addEventListener('click', function () {
+    document.getElementById('confirm').hidden = false;
+  });
+  window.demoUpdate = update;
+
+  var els = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); }
+  else {
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+    }, { threshold: 0.08 });
+    els.forEach(function (e) { io.observe(e); });
+  }
+  function press(group, b) {
+    group.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+    b.setAttribute('aria-pressed', 'true');
+  }
+  window.demoPress = press;
+  
+  // barre de progression et menu mobile
+  var prog = document.getElementById('prog');
+  window.addEventListener('scroll', function () {
+    var h = document.documentElement, m = h.scrollHeight - h.clientHeight;
+    prog.style.width = (m > 0 ? h.scrollTop / m * 100 : 0) + '%';
+  }, { passive: true });
+  var bg = document.getElementById('burger'), mm = document.getElementById('mmenu');
+  bg.addEventListener('click', function () {
+    bg.setAttribute('aria-expanded', mm.classList.toggle('open') ? 'true' : 'false');
+  });
+  mm.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') { mm.classList.remove('open'); bg.setAttribute('aria-expanded', 'false'); }
+  });
+
+  // compteurs
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function runCount(el) {
+    var to = +el.dataset.to, dec = +el.dataset.dec || 0, suf = el.dataset.suf || '', t0 = null;
+    function f(t) {
+      if (!t0) t0 = t;
+      var k = Math.min(1, (t - t0) / 1200), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = (to * e).toFixed(dec).replace('.', ',') + suf;
+      if (k < 1) requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  }
+  if (!still && 'IntersectionObserver' in window) {
+    var cio = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { runCount(x.target); cio.unobserve(x.target); } });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-to]').forEach(function (el) { cio.observe(el); });
+  }
+
+  // onglets
+  document.querySelectorAll('[data-tabs]').forEach(function (w) {
+    var bs = w.querySelectorAll('[role=tab]'), ps = w.querySelectorAll('[role=tabpanel]');
+    bs.forEach(function (bt, i) {
+      bt.addEventListener('click', function () {
+        bs.forEach(function (x, j) { x.setAttribute('aria-selected', j === i ? 'true' : 'false'); ps[j].hidden = j !== i; });
+      });
+    });
+  });
+
+  // galerie filtrable et visionneuse
+  var GD = [["Mariage", "Buffet champêtre", "t1"], ["Entreprise", "Cocktail de séminaire", "t4"], ["Mariage", "Repas servi 120 couverts", "t2"], ["Anniversaire", "Buffet des 40 ans", "t3"], ["Cocktail", "Pièces salées", "t2"], ["Entreprise", "Plateaux repas", "t1"], ["Cocktail", "Atelier plancha", "t3"], ["Anniversaire", "Table des desserts", "t4"]], MINI = "<div class=\"mini\"></div>";
+  var gal = document.getElementById('gal'), gf = document.getElementById('gfilter'), cats = ['Tout'], cur = 0;
+  var lb = document.getElementById('lb'), lbv = document.getElementById('lbv'), lbc = document.getElementById('lbc');
+  function openLb(i) {
+    cur = i; lbv.className = 'tile ' + GD[i][2]; lbv.innerHTML = MINI;
+    lbc.textContent = GD[i][0] + ' · ' + GD[i][1]; lb.hidden = false; document.getElementById('lbx').focus();
+  }
+  var tiles = GD.map(function (g, i) {
+    if (cats.indexOf(g[0]) < 0) cats.push(g[0]);
+    var t = document.createElement('button');
+    t.type = 'button'; t.className = 'tile ' + g[2]; t.innerHTML = MINI + '<span></span>';
+    t.querySelector('span').textContent = g[1];
+    t.setAttribute('aria-label', 'Agrandir : ' + g[1]);
+    t.addEventListener('click', function () { openLb(i); });
+    gal.appendChild(t); return t;
+  });
+  cats.forEach(function (c, i) {
+    var bt = document.createElement('button');
+    bt.type = 'button'; bt.textContent = c; bt.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    bt.addEventListener('click', function () {
+      tiles.forEach(function (t, k) { t.hidden = !(c === 'Tout' || GD[k][0] === c); });
+      press(gf.querySelectorAll('button'), bt);
+    });
+    gf.appendChild(bt);
+  });
+  function stepLb(d) {
+    var v = []; tiles.forEach(function (t, i) { if (!t.hidden) v.push(i); });
+    var k = v.indexOf(cur); openLb(v[(k + d + v.length) % v.length]);
+  }
+  function closeLb() { lb.hidden = true; }
+  document.getElementById('lbx').addEventListener('click', closeLb);
+  document.getElementById('lbp').addEventListener('click', function () { stepLb(-1); });
+  document.getElementById('lbn').addEventListener('click', function () { stepLb(1); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', function (e) {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') stepLb(-1);
+    if (e.key === 'ArrowRight') stepLb(1);
+  });
+
+  // calendrier de disponibilités (exemple)
+  var cg = document.getElementById('calGrid'), ct = document.getElementById('calTitle'), off = 0, selD = '';
+  var MN = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  function drawCal() {
+    var now = new Date(), first = new Date(now.getFullYear(), now.getMonth() + off, 1), y = first.getFullYear(), m = first.getMonth();
+    var limit = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+    ct.textContent = MN[m] + ' ' + y; cg.innerHTML = '';
+    var lead = (first.getDay() + 6) % 7, nd = new Date(y, m + 1, 0).getDate(), i;
+    for (i = 0; i < lead; i++) cg.appendChild(document.createElement('span'));
+    for (i = 1; i <= nd; i++) (function (d) {
+      var bt = document.createElement('button'), day = new Date(y, m, d);
+      var iso = y + '-' + ('0' + (m + 1)).slice(-2) + '-' + ('0' + d).slice(-2);
+      bt.type = 'button'; bt.textContent = d;
+      var full = (d * 13 + m * 7) % 5 === 0 || (day.getDay() === 6 && d % 2 === 0);
+      if (day < limit) { bt.disabled = true; bt.className = 'past'; }
+      else if (full) { bt.disabled = true; bt.className = 'full'; bt.setAttribute('aria-label', d + ' ' + MN[m] + ', complet'); }
+      else {
+        bt.setAttribute('aria-pressed', iso === selD ? 'true' : 'false');
+        bt.addEventListener('click', function () { selD = iso; document.getElementById('date').value = iso; drawCal(); update(); });
+      }
+      cg.appendChild(bt);
+    })(i);
+    document.getElementById('calPrev').disabled = off === 0;
+    document.getElementById('calNext').disabled = off === 8;
+  }
+  document.getElementById('calPrev').addEventListener('click', function () { off -= 1; drawCal(); });
+  document.getElementById('calNext').addEventListener('click', function () { off += 1; drawCal(); });
+  drawCal();
+
+  var hg = document.getElementById('hg'), rng = document.getElementById('rng'), hb = document.querySelectorAll('#hf button');
+  var radios = form.querySelectorAll('input[name="formule"]');
+  hg.addEventListener('input', function () { rng.value = hg.value; update(); });
+  hb.forEach(function (b) {
+    b.addEventListener('click', function () { radios[+b.dataset.i].checked = true; update(); });
+  });
+  document.addEventListener('demo:update', function (e) {
+    var d = e.detail; hg.value = d.n;
+    document.getElementById('hgOut').textContent = d.n;
+    document.getElementById('hTotal').textContent = d.fmt(d.total) + ' €';
+    document.getElementById('hPer').textContent = 'soit ' + String(Math.round(d.total / d.n * 100) / 100).replace('.', ',') + ' € par personne';
+    radios.forEach(function (r, i) { hb[i].setAttribute('aria-pressed', r.checked ? 'true' : 'false'); });
+  });
+
+  update();
+})();
+
+</script>
+</body>
+</html>
